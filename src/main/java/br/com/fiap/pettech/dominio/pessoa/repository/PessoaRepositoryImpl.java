@@ -7,6 +7,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
+import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
@@ -31,22 +32,49 @@ public class PessoaRepositoryImpl implements IPessoaRepository {
 
     @Override
     public Pessoa findById(Long id) {
-        return null;
+        String sql = "SELECT * FROM pessoas WHERE id = ?";
+        List<Pessoa> pessoas = jdbcTemplate.query(sql, new Object[]{id}, new PessoaRowMapper());
+
+        return pessoas.isEmpty() ? null : pessoas.get(0);
     }
 
     @Override
     public Pessoa save(Pessoa pessoa) {
-        return null;
+        try {
+            String sql = "INSERT INTO pessoas(nome, cpf, email, nascimento) VALUES(?,?,?,?)";
+            this.jdbcTemplate.update(sql,
+                    pessoa.getNome(),
+                    pessoa.getCpf(),
+                    pessoa.getEmail(),
+                    Date.valueOf(pessoa.getNascimento()));
+
+            return pessoa;
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
     }
 
     @Override
     public Pessoa update(Long id, Pessoa pessoa) {
-        return null;
+        try {
+            String sql = "UPDATE pessoas SET nome=?, cpf=?, email=?, nascimento=? WHERE id = ?";
+            this.jdbcTemplate.update(sql,
+                    pessoa.getNome(),
+                    pessoa.getCpf(),
+                    pessoa.getEmail(),
+                    Date.valueOf(pessoa.getNascimento()),
+                    id);
+
+            return pessoa;
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
     }
 
     @Override
     public void deleteById(Long id) {
-
+        String sql = "DELETE FROM pessoas WHERE id = ?";
+        this.jdbcTemplate.update(sql, id);
     }
 
     private static class PessoaRowMapper implements RowMapper<Pessoa> {

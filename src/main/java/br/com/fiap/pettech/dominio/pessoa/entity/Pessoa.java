@@ -2,21 +2,23 @@ package br.com.fiap.pettech.dominio.pessoa.entity;
 
 import java.time.LocalDate;
 
-public abstract class Pessoa {
+public class Pessoa {
 
     private Long id;
-
     private String nome;
-
     private LocalDate nascimento;
+    private String cpf;
+    private String email;
 
     public Pessoa() {
     }
 
-    public Pessoa(Long id, String nome, LocalDate nascimento) {
+    public Pessoa(Long id, String nome, LocalDate nascimento, String cpf, String email) {
         this.id = id;
         this.nome = nome;
         this.nascimento = nascimento;
+        this.cpf = cpf;
+        this.email = email;
     }
 
     public Long getId() {
@@ -46,6 +48,24 @@ public abstract class Pessoa {
         return this;
     }
 
+    public String getCpf() {
+        return cpf;
+    }
+
+    public Pessoa setCpf(String cpf) {
+        this.cpf = cpf;
+        return this;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public Pessoa setEmail(String email) {
+        this.email = email;
+        return this;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -65,6 +85,8 @@ public abstract class Pessoa {
                 "id=" + id +
                 ", nome='" + nome + '\'' +
                 ", nascimento=" + nascimento +
+                ", cpf='" + cpf + '\'' +
+                ", email='" + email + '\'' +
                 '}';
     }
 }

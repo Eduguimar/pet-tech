@@ -4,8 +4,12 @@ import br.com.fiap.pettech.dominio.categoria.dto.CategoriaDTO;
 import br.com.fiap.pettech.dominio.categoria.entity.Categoria;
 import br.com.fiap.pettech.dominio.categoria.repository.ICategoriaRepository;
 import br.com.fiap.pettech.exception.service.ControllerNotFoundException;
+import br.com.fiap.pettech.exception.service.DatabaseException;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -39,6 +43,7 @@ public class CategoriaService {
         return new CategoriaDTO(categoriaSaved);
     }
 
+    @Transactional
     public CategoriaDTO update(Long id, CategoriaDTO dto) {
         try {
             Categoria entity = repository.getOne(id);
@@ -54,8 +59,10 @@ public class CategoriaService {
     public void delete(Long id) {
         try {
             repository.deleteById(id);
-        } catch (EntityNotFoundException e) {
+        } catch (EmptyResultDataAccessException e) {
             throw new ControllerNotFoundException("Categoria não encontrada: " + id);
+        } catch (DataIntegrityViolationException e) {
+            throw new DatabaseException("Violação de integridade");
         }
 
     }

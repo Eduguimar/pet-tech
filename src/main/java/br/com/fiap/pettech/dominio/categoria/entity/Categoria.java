@@ -1,9 +1,12 @@
 package br.com.fiap.pettech.dominio.categoria.entity;
 
+import br.com.fiap.pettech.dominio.produto.entity.Produto;
 import jakarta.persistence.*;
 
 import java.time.Instant;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "tb_categoria")
@@ -12,11 +15,13 @@ public class Categoria {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String nome;
 
     @Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE")
     private Instant createdAt;
+
+    @ManyToMany(mappedBy = "categorias")
+    private Set<Produto> produtos = new HashSet<>();
 
     public Categoria() {
     }
@@ -52,6 +57,10 @@ public class Categoria {
     public Categoria setCreatedAt(Instant createdAt) {
         this.createdAt = createdAt;
         return this;
+    }
+
+    public Set<Produto> getProdutos() {
+        return produtos;
     }
 
     @PrePersist
